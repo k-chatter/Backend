@@ -39,9 +39,7 @@ jobs:
     - name: Copy Application-Properties
       run: |
         mkdir -p src/main/resources
-        cp Backend-Secret/application.yml src/main/resources/application.yml
-        cp Backend-Secret/application-dev.yml src/main/resources/application-dev.yml
-
+        cp Backend-Secret/application-ci.yml src/main/resources/application.yml
 
     - name: Setup MariaDB
       uses: getong/mariadb-action@v1.11
