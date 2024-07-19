@@ -1,7 +1,7 @@
 package com.sum;
 
-import com.sum.chatter.repository.entity.User;
 import com.sum.chatter.dto.auth.NaverMeResponse;
+import com.sum.chatter.repository.entity.User;
 
 public class TestFixture {
 

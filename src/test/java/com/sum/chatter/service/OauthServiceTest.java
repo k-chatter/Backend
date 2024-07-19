@@ -4,15 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.sum.TestFixture;
 import com.sum.chatter.dto.UserSignUpDto;
+import com.sum.chatter.dto.auth.KakaoMeResponse;
+import com.sum.chatter.dto.auth.NaverMeResponse;
 import com.sum.chatter.dto.auth.OauthResponseDto;
 import com.sum.chatter.repository.UserRepository;
 import com.sum.chatter.repository.entity.User;
 import com.sum.chatter.service.auth.JwtBuilder;
 import com.sum.chatter.service.auth.JwtInfo;
 import com.sum.chatter.service.auth.OauthService;
-import com.sum.chatter.dto.auth.KakaoMeResponse;
 import com.sum.chatter.service.auth.oauth_client.KakaoOauthClient;
-import com.sum.chatter.dto.auth.NaverMeResponse;
 import com.sum.chatter.service.auth.oauth_client.NaverOauthClient;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -34,9 +34,9 @@ public class OauthServiceTest {
 
     private final OauthService oauthService;
 
-    private final KakaoOauthClient kakaoOAuthClient;
+    private final KakaoOauthClient kakaoOauthClient;
 
-    private final NaverOauthClient naverOAuthClient;
+    private final NaverOauthClient naverOauthClient;
 
     private final UserRepository userRepository;
 
@@ -46,12 +46,12 @@ public class OauthServiceTest {
 
     @Autowired
     public OauthServiceTest(UserRepository userRepository) {
-        this.kakaoOAuthClient = Mockito.mock(KakaoOauthClient.class);
-        this.naverOAuthClient = Mockito.mock(NaverOauthClient.class);
+        this.kakaoOauthClient = Mockito.mock(KakaoOauthClient.class);
+        this.naverOauthClient = Mockito.mock(NaverOauthClient.class);
         this.userRepository = userRepository;
         this.modelMapper = new ModelMapper();
         this.jwtBuilder = new JwtBuilder("abcdabcdabcdabcdabcdabcdabcdabcd");
-        this.oauthService = new OauthService(kakaoOAuthClient, naverOAuthClient, jwtBuilder, userRepository,
+        this.oauthService = new OauthService(kakaoOauthClient, naverOauthClient, jwtBuilder, userRepository,
                 modelMapper);
     }
 
@@ -59,8 +59,8 @@ public class OauthServiceTest {
     public void 유저_존재_카카오_인증_성공() {
         //given
         User user = userRepository.save(TestFixture.getUser());
-        Mockito.doReturn("accessToken").when(kakaoOAuthClient).postToken("authCode");
-        Mockito.doReturn(KakaoMeResponse.builder().id("13").build()).when(kakaoOAuthClient).getInfo("accessToken");
+        Mockito.doReturn("accessToken").when(kakaoOauthClient).postToken("authCode");
+        Mockito.doReturn(KakaoMeResponse.builder().id("13").build()).when(kakaoOauthClient).getInfo("accessToken");
 
         //when
         OauthResponseDto result = oauthService.oauthKakao("authCode");
@@ -74,8 +74,8 @@ public class OauthServiceTest {
     @Test
     public void 유저_없음_카카오_인증_성공() {
         //given
-        Mockito.doReturn("accessToken").when(kakaoOAuthClient).postToken("authCode");
-        Mockito.doReturn(KakaoMeResponse.builder().id("13").build()).when(kakaoOAuthClient).getInfo("accessToken");
+        Mockito.doReturn("accessToken").when(kakaoOauthClient).postToken("authCode");
+        Mockito.doReturn(KakaoMeResponse.builder().id("13").build()).when(kakaoOauthClient).getInfo("accessToken");
 
         //when
         OauthResponseDto result = oauthService.oauthKakao("authCode");
@@ -91,8 +91,8 @@ public class OauthServiceTest {
         //given
         User user = userRepository.save(TestFixture.getUser());
         NaverMeResponse me = TestFixture.getNaverMeResponse();
-        Mockito.doReturn("accessToken").when(naverOAuthClient).postToken("authCode");
-        Mockito.doReturn(me).when(naverOAuthClient).getInfo("accessToken");
+        Mockito.doReturn("accessToken").when(naverOauthClient).postToken("authCode");
+        Mockito.doReturn(me).when(naverOauthClient).getInfo("accessToken");
 
         //when
         OauthResponseDto result = oauthService.oauthNaver("authCode");
@@ -107,8 +107,8 @@ public class OauthServiceTest {
     public void 유저_없음_네이버_인증_성공() {
         //given
         NaverMeResponse me = TestFixture.getNaverMeResponse();
-        Mockito.doReturn("accessToken").when(naverOAuthClient).postToken("authCode");
-        Mockito.doReturn(me).when(naverOAuthClient).getInfo("accessToken");
+        Mockito.doReturn("accessToken").when(naverOauthClient).postToken("authCode");
+        Mockito.doReturn(me).when(naverOauthClient).getInfo("accessToken");
 
         //when
         OauthResponseDto result = oauthService.oauthNaver("authCode");
