@@ -3,19 +3,17 @@ package com.sum.chatter.service;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.sum.TestFixture;
-import com.sum.chatter.dto.UserDto;
 import com.sum.chatter.dto.UserSignUpDto;
-import com.sum.chatter.dto.auth.OAuthResponseDto;
-import com.sum.chatter.error.SignInException;
+import com.sum.chatter.dto.auth.OauthResponseDto;
 import com.sum.chatter.repository.UserRepository;
 import com.sum.chatter.repository.entity.User;
 import com.sum.chatter.service.auth.JwtBuilder;
 import com.sum.chatter.service.auth.JwtInfo;
-import com.sum.chatter.service.auth.OAuthService;
+import com.sum.chatter.service.auth.OauthService;
 import com.sum.chatter.dto.auth.KakaoMeResponse;
-import com.sum.chatter.service.auth.oauth_client.KakaoOAuthClient;
+import com.sum.chatter.service.auth.oauth_client.KakaoOauthClient;
 import com.sum.chatter.dto.auth.NaverMeResponse;
-import com.sum.chatter.service.auth.oauth_client.NaverOAuthClient;
+import com.sum.chatter.service.auth.oauth_client.NaverOauthClient;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,11 +32,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 @Transactional
 public class OauthServiceTest {
 
-    private final OAuthService oauthService;
+    private final OauthService oauthService;
 
-    private final KakaoOAuthClient kakaoOAuthClient;
+    private final KakaoOauthClient kakaoOAuthClient;
 
-    private final NaverOAuthClient naverOAuthClient;
+    private final NaverOauthClient naverOAuthClient;
 
     private final UserRepository userRepository;
 
@@ -48,12 +46,13 @@ public class OauthServiceTest {
 
     @Autowired
     public OauthServiceTest(UserRepository userRepository) {
-        this.kakaoOAuthClient = Mockito.mock(KakaoOAuthClient.class);
-        this.naverOAuthClient = Mockito.mock(NaverOAuthClient.class);
+        this.kakaoOAuthClient = Mockito.mock(KakaoOauthClient.class);
+        this.naverOAuthClient = Mockito.mock(NaverOauthClient.class);
         this.userRepository = userRepository;
         this.modelMapper = new ModelMapper();
         this.jwtBuilder = new JwtBuilder("abcdabcdabcdabcdabcdabcdabcdabcd");
-        this.oauthService = new OAuthService(kakaoOAuthClient, naverOAuthClient, jwtBuilder, userRepository, modelMapper);
+        this.oauthService = new OauthService(kakaoOAuthClient, naverOAuthClient, jwtBuilder, userRepository,
+                modelMapper);
     }
 
     @Test
@@ -64,7 +63,7 @@ public class OauthServiceTest {
         Mockito.doReturn(KakaoMeResponse.builder().id("13").build()).when(kakaoOAuthClient).getInfo("accessToken");
 
         //when
-        OAuthResponseDto result = oauthService.oauthKakao("authCode");
+        OauthResponseDto result = oauthService.oauthKakao("authCode");
 
         //then
         assertEquals(200, result.getStatusCode());
@@ -79,7 +78,7 @@ public class OauthServiceTest {
         Mockito.doReturn(KakaoMeResponse.builder().id("13").build()).when(kakaoOAuthClient).getInfo("accessToken");
 
         //when
-        OAuthResponseDto result = oauthService.oauthKakao("authCode");
+        OauthResponseDto result = oauthService.oauthKakao("authCode");
 
         //then
         assertEquals(777, result.getStatusCode());
@@ -96,12 +95,13 @@ public class OauthServiceTest {
         Mockito.doReturn(me).when(naverOAuthClient).getInfo("accessToken");
 
         //when
-        OAuthResponseDto result = oauthService.oauthNaver("authCode");
+        OauthResponseDto result = oauthService.oauthNaver("authCode");
 
         //then
         assertEquals(200, result.getStatusCode());
         assertNull(result.getUser());
-        assertEquals(jwtBuilder.createJwt(new JwtInfo(user.getId())), result.getToken());    }
+        assertEquals(jwtBuilder.createJwt(new JwtInfo(user.getId())), result.getToken());
+    }
 
     @Test
     public void 유저_없음_네이버_인증_성공() {
@@ -111,7 +111,7 @@ public class OauthServiceTest {
         Mockito.doReturn(me).when(naverOAuthClient).getInfo("accessToken");
 
         //when
-        OAuthResponseDto result = oauthService.oauthNaver("authCode");
+        OauthResponseDto result = oauthService.oauthNaver("authCode");
 
         //then
         assertEquals(777, result.getStatusCode());

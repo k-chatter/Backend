@@ -1,13 +1,13 @@
 package com.sum.chatter.service.auth;
 
 import com.sum.chatter.dto.UserSignUpDto;
-import com.sum.chatter.dto.auth.OAuthResponseDto;
+import com.sum.chatter.dto.auth.KakaoMeResponse;
+import com.sum.chatter.dto.auth.NaverMeResponse;
+import com.sum.chatter.dto.auth.OauthResponseDto;
 import com.sum.chatter.repository.UserRepository;
 import com.sum.chatter.repository.entity.User;
-import com.sum.chatter.dto.auth.KakaoMeResponse;
-import com.sum.chatter.service.auth.oauth_client.KakaoOAuthClient;
-import com.sum.chatter.dto.auth.NaverMeResponse;
-import com.sum.chatter.service.auth.oauth_client.NaverOAuthClient;
+import com.sum.chatter.service.auth.oauth_client.KakaoOauthClient;
+import com.sum.chatter.service.auth.oauth_client.NaverOauthClient;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class OAuthService {
+public class OauthService {
 
-    private final KakaoOAuthClient kakaoOAuthClient;
+    private final KakaoOauthClient kakaoOauthClient;
 
-    private final NaverOAuthClient naverOAuthClient;
+    private final NaverOauthClient naverOauthClient;
 
     private final JwtBuilder jwtBuilder;
 
@@ -27,13 +27,13 @@ public class OAuthService {
 
     private final ModelMapper modelMapper;
 
-    public OAuthResponseDto oauthKakao(String authCode) {
-        String accessToken = kakaoOAuthClient.postToken(authCode);
-        KakaoMeResponse me = kakaoOAuthClient.getInfo(accessToken);
+    public OauthResponseDto oauthKakao(String authCode) {
+        String accessToken = kakaoOauthClient.postToken(authCode);
+        KakaoMeResponse me = kakaoOauthClient.getInfo(accessToken);
         Optional<User> user = userRepository.findByOauthId(me.getId());
 
         if (user.isEmpty()) {
-            return OAuthResponseDto.builder()
+            return OauthResponseDto.builder()
                     .statusCode(777) // if 777 code returned, client progress sign-up process;
                     .user(UserSignUpDto.builder()
                             .build())
@@ -42,20 +42,20 @@ public class OAuthService {
 
         JwtInfo jwtInfo = new JwtInfo(user.get().getId());
 
-        return OAuthResponseDto.builder()
+        return OauthResponseDto.builder()
                 .statusCode(200)
                 .user(null)
                 .token(jwtBuilder.createJwt(jwtInfo))
                 .build();
     }
 
-    public OAuthResponseDto oauthNaver(String authCode) {
-        String accessToken = naverOAuthClient.postToken(authCode);
-        NaverMeResponse me = naverOAuthClient.getInfo(accessToken);
+    public OauthResponseDto oauthNaver(String authCode) {
+        String accessToken = naverOauthClient.postToken(authCode);
+        NaverMeResponse me = naverOauthClient.getInfo(accessToken);
         Optional<User> user = userRepository.findByOauthId(me.getId());
 
         if (user.isEmpty()) {
-            return OAuthResponseDto.builder()
+            return OauthResponseDto.builder()
                     .statusCode(777) // if 777 code returned, client progress sign-up process;
                     .user(modelMapper.map(me, UserSignUpDto.class))
                     .build();
@@ -63,11 +63,12 @@ public class OAuthService {
 
         JwtInfo jwtInfo = new JwtInfo(user.get().getId());
 
-        return OAuthResponseDto.builder()
+        return OauthResponseDto.builder()
                 .statusCode(200)
                 .user(null)
                 .token(jwtBuilder.createJwt(jwtInfo))
                 .build();
 
     }
+
 }

@@ -4,4 +4,6 @@ public record JwtInfo(
 
         Long id
 
-) {}
+) {
+
+}

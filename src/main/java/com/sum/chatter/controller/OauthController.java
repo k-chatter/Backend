@@ -1,7 +1,7 @@
 package com.sum.chatter.controller;
 
-import com.sum.chatter.dto.auth.OAuthResponseDto;
-import com.sum.chatter.service.auth.OAuthService;
+import com.sum.chatter.dto.auth.OauthResponseDto;
+import com.sum.chatter.service.auth.OauthService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("oauth")
 @RequiredArgsConstructor
-public class OAuthController {
+public class OauthController {
 
-    private  final OAuthService oAuthService;
+    private final OauthService oAuthService;
 
     @GetMapping("kakao")
-    public OAuthResponseDto oauthKakao(HttpServletRequest request) {
+    public OauthResponseDto oauthKakao(HttpServletRequest request) {
         String authCode = exportAuthCode(request.getQueryString());
 
         System.out.println("Called KakaoController");
@@ -28,7 +28,7 @@ public class OAuthController {
     }
 
     @GetMapping("naver")
-    public OAuthResponseDto oauthNaver(HttpServletRequest request) {
+    public OauthResponseDto oauthNaver(HttpServletRequest request) {
         String authCode = exportAuthCode(request.getQueryString());
 
         return oAuthService.oauthNaver(authCode);
