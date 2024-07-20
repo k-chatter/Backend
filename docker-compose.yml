@@ -1,21 +1,15 @@
 version: "3"
 
-networks:
-  default:
-    name: docker-network
-
 services:
-  chatter:
-    depends_on:
-      - db
-    build:
-      context: .
-    image: chatter:0.0.0
-    networks:
-      - default
-    restart: on-failure
-    ports:
-      - 80:80
+#  chatter:
+#    depends_on:
+#      - db
+#    build:
+#      context: .
+#    image: chatter:0.0.0
+#    restart: on-failure
+#    ports:
+#      - 80:80
 
   db:
     image: mariadb:11.4.2
@@ -23,3 +17,5 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: root
       MARIADB_DATABASE: chatter
+    ports:
+      - 3306:3306
