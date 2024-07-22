@@ -16,3 +16,8 @@ spring:
         format_sql: true  # sql query formatting
 
 jwt.secret: abcdabcdabcdabcdabcdabcdabcdabcd
+
+oauth.redirect_url: 123.123.123.123
+oauth.kakao.client_id: 1234
+oauth.naver.client_id: 1234
+oauth.naver.client_secret: 1234
