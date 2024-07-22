@@ -80,16 +80,10 @@ asciidoctor {
 }
 
 asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')  // (11)
-}
-
-task copyDocument(type: Copy) { // (12)
-    dependsOn asciidoctor
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
+    delete file('build/docs')  // (11)
 }
 
 build {
-    dependsOn copyDocument
+    dependsOn asciidoctor
 }
 
