@@ -30,7 +30,7 @@ public class OauthService {
     public OauthResponseDto oauthKakao(String authCode) {
         String accessToken = kakaoOauthClient.postToken(authCode);
         KakaoMeResponse me = kakaoOauthClient.getInfo(accessToken);
-        Optional<User> user = userRepository.findByOauthId(me.getId());
+        Optional<User> user = userRepository.findByOauthId(me.getOauthId());
 
         if (user.isEmpty()) {
             return OauthResponseDto.builder()
@@ -52,7 +52,7 @@ public class OauthService {
     public OauthResponseDto oauthNaver(String authCode) {
         String accessToken = naverOauthClient.postToken(authCode);
         NaverMeResponse me = naverOauthClient.getInfo(accessToken);
-        Optional<User> user = userRepository.findByOauthId(me.getId());
+        Optional<User> user = userRepository.findByOauthId(me.getOauthId());
 
         if (user.isEmpty()) {
             return OauthResponseDto.builder()
@@ -68,7 +68,6 @@ public class OauthService {
                 .user(null)
                 .token(jwtBuilder.createJwt(jwtInfo))
                 .build();
-
     }
 
 }

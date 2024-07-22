@@ -60,7 +60,7 @@ public class OauthServiceTest {
         //given
         User user = userRepository.save(TestFixture.getUser());
         Mockito.doReturn("accessToken").when(kakaoOauthClient).postToken("authCode");
-        Mockito.doReturn(KakaoMeResponse.builder().id("13").build()).when(kakaoOauthClient).getInfo("accessToken");
+        Mockito.doReturn(KakaoMeResponse.builder().oauthId("13").build()).when(kakaoOauthClient).getInfo("accessToken");
 
         //when
         OauthResponseDto result = oauthService.oauthKakao("authCode");
@@ -75,7 +75,7 @@ public class OauthServiceTest {
     public void 유저_없음_카카오_인증_성공() {
         //given
         Mockito.doReturn("accessToken").when(kakaoOauthClient).postToken("authCode");
-        Mockito.doReturn(KakaoMeResponse.builder().id("13").build()).when(kakaoOauthClient).getInfo("accessToken");
+        Mockito.doReturn(KakaoMeResponse.builder().oauthId("13").build()).when(kakaoOauthClient).getInfo("accessToken");
 
         //when
         OauthResponseDto result = oauthService.oauthKakao("authCode");
