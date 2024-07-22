@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserSignUpDto {
 
+    private String oauthId;
+
     private String name;
 
     private String gender;

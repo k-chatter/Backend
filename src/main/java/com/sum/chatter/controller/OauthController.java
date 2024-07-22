@@ -23,7 +23,6 @@ public class OauthController {
     public OauthResponseDto oauthKakao(HttpServletRequest request) {
         String authCode = exportAuthCode(request.getQueryString());
 
-        System.out.println("Called KakaoController");
         return oAuthService.oauthKakao(authCode);
     }
 
