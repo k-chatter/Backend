@@ -3,6 +3,7 @@ plugins {
 	id 'checkstyle'
 	id 'org.springframework.boot' version '3.2.7'
 	id 'io.spring.dependency-management' version '1.1.5'
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'com.sum'
@@ -15,7 +16,9 @@ java {
 }
 
 configurations {
-	compileOnly {
+    asciidoctorExt
+
+    compileOnly {
 		extendsFrom annotationProcessor
 	}
 }
@@ -45,10 +48,20 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
 	implementation 'org.modelmapper:modelmapper:3.0.0'
+
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
 }
+
+ext {
+    snippetsDir = file('build/generated-snippets') // (5)
+}
+
 
 tasks.named('test') {
 	useJUnitPlatform()
+    outputs.dir snippetsDir
 }
 
 compileJava.options.encoding = 'UTF-8'
@@ -57,5 +70,26 @@ compileTestJava.options.encoding = 'UTF-8'
 checkstyle {
     toolVersion = "10.17.0"
     maxWarnings = 0
+}
+
+asciidoctor {
+    configurations 'asciidoctorExt' // (7)
+    baseDirFollowsSourceFile() // (8)
+    inputs.dir snippetsDir // (9)
+    dependsOn test // (10)
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')  // (11)
+}
+
+task copyDocument(type: Copy) { // (12)
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
 }
 
