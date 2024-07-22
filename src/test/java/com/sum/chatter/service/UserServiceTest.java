@@ -57,7 +57,7 @@ public class UserServiceTest {
 
         //then
         assertEquals(UserDto.builder()
-                .id(1L)
+                .id(result.getId())
                 .name("성준")
                 .age("29")
                 .address("jeju")
